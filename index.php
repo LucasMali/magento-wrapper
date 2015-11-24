@@ -9,15 +9,21 @@
  */
 
 // TODO add in autoloader
-if ((require_once 'Lib/Magento.php') === false) {
+if (
+    (require_once 'Lib/Magento/Magento.php') === false
+    || (require_once 'Lib/Magento/Soap/V2/Soap.php') === false
+) {
     echo 'Oh-nos! Something went wrong. Please contact [PERSON] for further help';
     // Send an email
     error_log('[error] ' . date("Y-m-d H:i:s") . ' Unable to load the file Magento.php', 1, 'email@here.com');
     exit;
 }
 
+// Control logging events
+defined('LOGGING') or define('LOGGING', false);
+
 // THIS WOULD BE SENT OVER THE WIRE
-$_REQUEST = [
+$requests = [
     'action' => 'addproduct',
     'type' => 'simple',
     'sku' => 1234567890,
@@ -40,29 +46,30 @@ $_REQUEST = [
             'meta_description' => 'Product meta description'
         ]
 ];
-//
-//$_REQUEST = [
-//    'action' => 'order',
-//    'invoice' => [
-//        ['order_item_id' => '3', 'qty' => 1]
-//    ]
-//];
 // END SENT OVER THE WIRE
-
-if (!empty($_REQUEST)) {
-    $requests = file_get_contents('php://input');
-}
+//
+//if (!empty($_REQUEST)) {
+//    $requests = file_get_contents('php://input');
+//}
 
 try {
-    // For logging
-    $logType = 'log';
-    $fileLoc = '/var/tmp/magento.log';
+    if (LOGGING === true) {
+        $logType = 'log';
+        $fileLoc = '/var/tmp/magento.log';
+    }
 
     // Begin the API call(s)
     $client = new SoapClient(\Lib\Magento\MagentoInterface::MAGENTO_V2_BASE_URL);
     $magentoSoap = new \Lib\Magento\Soap\V2\Soap($client);
     $magentoSoap->logIn();
 
+    /*
+     * Branch logic based on action
+     *
+     * NOTE:    This will be replaced with the uri action sets
+     *          e.g.    http://magento.local/addproduct/
+     *                  http://magento.local/order
+     */
     switch ($requests['action']) {
         case 'addproduct':
             $res = $magentoSoap->addProduct($requests);
@@ -75,6 +82,9 @@ try {
     /*
      * Capture the results and display them. This might be handy for branching
      * logic and displaying custom messages.
+     *
+     * NOTE:    The res in most test cases have been the productID if successful
+     *          otherwise it returns a message e.g. Unable to insert the product
      */
     if (
         gettype($res) == 'object'
@@ -103,9 +113,12 @@ try {
     );
     $logType = 'error';
 } finally {
-    // LOG the transaction
-    if (!file_exists($fileLoc)) {
-        touch($fileLoc); // TODO consider adding addition catch logic for failure
+    if (LOGGING === true) { // LOG the transaction
+        if (!file_exists($fileLoc)) {
+            if (!touch($fileLoc)) {
+                // TODO consider adding addition catch logic for failure
+            }
+        }
+        error_log(sprintf('[%s] %s %s', $errorType, date("Y-m-d H:i:s"), $message), 3, $fileLoc);
     }
-    error_log(sprintf('[%s] %s %s', $errorType, date("Y-m-d H:i:s"), $message), 3, $fileLoc);
 }
