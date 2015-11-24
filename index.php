@@ -8,6 +8,7 @@
  * @link http://devdocs.magento.com/guides/m1x/
  */
 
+// TODO add in autoloader
 if ((require_once 'Lib/Magento.php') === false) {
     echo 'Oh-nos! Something went wrong. Please contact [PERSON] for further help';
     // Send an email
@@ -16,36 +17,36 @@ if ((require_once 'Lib/Magento.php') === false) {
 }
 
 // THIS WOULD BE SENT OVER THE WIRE
-//$_REQUEST = [
-//    'action' => 'addproduct',
-//    'type' => 'simple',
-//    'sku' => 1234567890,
-//    'info' =>
-//        [
-//            'categories' => [2],
-//            'websites' => [1],
-//            'name' => 'Product name',
-//            'description' => 'Product description',
-//            'short_description' => 'Product short description',
-//            'weight' => '10',
-//            'status' => '1',
-//            'url_key' => 'product-url-key',
-//            'url_path' => 'product-url-path',
-//            'visibility' => '4',
-//            'price' => '100',
-//            'tax_class_id' => 1,
-//            'meta_title' => 'Product meta title',
-//            'meta_keyword' => 'Product meta keyword',
-//            'meta_description' => 'Product meta description'
-//        ]
-//];
-
 $_REQUEST = [
-    'action' => 'order',
-    'invoice' => [
-        ['order_item_id' => '3', 'qty' => 1]
-    ]
+    'action' => 'addproduct',
+    'type' => 'simple',
+    'sku' => 1234567890,
+    'info' =>
+        [
+            'categories' => [2],
+            'websites' => [1],
+            'name' => 'Product name',
+            'description' => 'Product description',
+            'short_description' => 'Product short description',
+            'weight' => '10',
+            'status' => '1',
+            'url_key' => 'product-url-key',
+            'url_path' => 'product-url-path',
+            'visibility' => '4',
+            'price' => '100',
+            'tax_class_id' => 1,
+            'meta_title' => 'Product meta title',
+            'meta_keyword' => 'Product meta keyword',
+            'meta_description' => 'Product meta description'
+        ]
 ];
+//
+//$_REQUEST = [
+//    'action' => 'order',
+//    'invoice' => [
+//        ['order_item_id' => '3', 'qty' => 1]
+//    ]
+//];
 // END SENT OVER THE WIRE
 
 if (!empty($_REQUEST)) {
@@ -58,16 +59,16 @@ try {
     $fileLoc = '/var/tmp/magento.log';
 
     // Begin the API call(s)
-    $client = new SoapClient(\Lib\MagentoInterface::MAGENTO_V2_BASE_URL);
-    $mi = new \Lib\MagentoInterface($client);
-    $mi->logIn();
+    $client = new SoapClient(\Lib\Magento\MagentoInterface::MAGENTO_V2_BASE_URL);
+    $magentoSoap = new \Lib\Magento\Soap\V2\Soap($client);
+    $magentoSoap->logIn();
 
     switch ($requests['action']) {
         case 'addproduct':
-            $res = $mi->addProduct($requests);
+            $res = $magentoSoap->addProduct($requests);
             break;
         case 'order':
-            $res = $mi->addOrder($requests);
+            $res = $magentoSoap->addOrder($requests);
             break;
     }
 
