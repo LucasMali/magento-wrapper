@@ -7,6 +7,7 @@
  *
  * @link http://devdocs.magento.com/guides/m1x/
  */
+session_start();
 
 // TODO add in autoloader
 if (
@@ -18,6 +19,7 @@ if (
     error_log('[error] ' . date("Y-m-d H:i:s") . ' Unable to load the file Magento.php', 1, 'email@here.com');
     exit;
 }
+// End TODO
 
 // Control logging events
 defined('LOGGING') or define('LOGGING', false);

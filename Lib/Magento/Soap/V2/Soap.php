@@ -8,11 +8,59 @@
 
 namespace Lib\Magento\Soap\V2;
 
-
 use Lib\Magento\MagentoInterface;
 
+/**
+ * Class Soap
+ * @package Lib\Magento\Soap\V2
+ *
+ * This is a basic wrapper to interact with Magento's SOAP API
+ */
 class Soap extends MagentoInterface
 {
+    const SOAP_V2_URL = 'http://magento.local/api/v2_soap/?wsdl';
+    const SOAP_V1_URL = 'http://magento.local/api/soap/?wsdl';
+    const DEFAULT_USER = 'lucasmali';
+    const DEFAULT_PASS = 'passcode1';
+
+    /**
+     * Contains the SoapClient object
+     * @var SoapClient
+     */
+    private $client;
+
+    /**
+     * Contains the sessionId for the SoapClient
+     * @see $client
+     * @var int
+     */
+    private $session;
+
+    /**
+     * MagentoInterface constructor.
+     * @param SoapClient $client
+     */
+    public function __construct(SoapClient $client)
+    {
+        $this->client = $client;
+    }
+
+    /**
+     * @param string $u
+     * @param string $p
+     */
+    public function logIn($u = self::DEFAULT_USER, $p = self::DEFAULT_PASS)
+    {
+        if (
+            !is_string($u)
+            || !is_string($p)
+        ) {
+            throw new \LogicException('Please use a valid string type');
+        }
+
+        $this->session = $this->client->login($u, $p);
+    }
+
     /**
      * @param array $products
      * @return array
@@ -88,5 +136,21 @@ class Soap extends MagentoInterface
         }
 
         return $res;
+    }
+
+    /**
+     * Create a cart for buying stuff!
+     */
+    public function createCart()
+    {
+        $this->cart = $this->client->shoppingCartCreate($this->session, 1);
+    }
+
+    /**
+     * @param $apiUrl
+     */
+    public function setApiUrl($apiUrl)
+    {
+        $this->client->setLocation($apiUrl);
     }
 }
