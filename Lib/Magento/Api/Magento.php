@@ -9,8 +9,6 @@ namespace Lib\Magento\Api;
 /**
  * Class Magento
  *
- * This class is a basic interface to interact with magento's SOAP API Ver 2
- * @link http://devdocs.magento.com/guides/m1x/
  */
 abstract class MagentoInterface
 {

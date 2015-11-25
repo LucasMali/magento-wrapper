@@ -1,9 +1,8 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: lucas
- * Date: 11/24/2015
- * Time: 2:54 PM
+ * @author Lucas Maliszewski <lucascube@gmail.com>
+ * @date 11/24/2015
  */
 
 namespace Controller\Magento\Api;
@@ -12,6 +11,11 @@ use Lib\Magento\Api\Soap\V2\Soap;
 
 /**
  * Class SoapMeController
+ *
+ * This is a hybrid [MV]C controller, taking out the Model View.
+ * It interacts with the Library[Model] SOAP Object based off of the public
+ * trigger[view].
+ *
  * @package Controller\Magento\Api
  */
 class SoapMeController
@@ -55,6 +59,10 @@ class SoapMeController
     }
 
     /**
+     * Run
+     *
+     * Simple action command to process the events based on the action given.
+     *
      * @return mixed
      * @throws \Exception
      */
@@ -69,7 +77,8 @@ class SoapMeController
                     $res = $this->ms->addProduct($this->request['product']);
                     break;
                 case self::ORDER:
-                    $res = $this->ms->addOrder($this->request['order']);
+                    $this->ms->addOrder($this->request['order']);
+                    $res = $this->ms->finalizeOrder();
                     break;
             }
 

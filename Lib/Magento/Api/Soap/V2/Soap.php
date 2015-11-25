@@ -1,9 +1,8 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: lucas
- * Date: 11/24/2015
- * Time: 8:00 AM
+ * @author Lucas Maliszewski <lucascube@gmail.com>
+ * @date 1/24/2015
  */
 
 namespace Lib\Magento\Api\Soap\V2;
@@ -14,11 +13,14 @@ use SoapFault;
 
 /**
  * Class Soap
+ *
+ * This class is to extend the functionality of Magento 1.9.2.2 SOAP API
+ * V2. There are attributes ready for V1 but no implementations are
+ * available yet.
+ *
  * @package Lib\Magento\Soap\V2
- *
+ * @link http://devdocs.magento.com/guides/m1x/
  * @todo add coupon logic
- *
- * This is a basic wrapper to interact with Magento's SOAP API
  */
 class Soap extends MagentoInterface
 {
@@ -50,6 +52,12 @@ class Soap extends MagentoInterface
     }
 
     /**
+     * Login
+     *
+     * This method will simply validate types of arguments and use the
+     * SoapClient::login() method to begin the handshake.
+     *
+     * @see SoapClient
      * @param string $u
      * @param string $p
      */
@@ -66,6 +74,12 @@ class Soap extends MagentoInterface
     }
 
     /**
+     * Add Products
+     *
+     * This method will add an array of products to parse through, making
+     * use of the Soap::addProduct() method
+     *
+     * @see Soap::addProduct()
      * @param array $products
      * @return array
      * @throws \Exception
@@ -87,6 +101,10 @@ class Soap extends MagentoInterface
     }
 
     /**
+     * Add product
+     *
+     * Add product will take a valid array
+     *
      * @param array $product
      * @return mixed
      * @throws SoapFault
@@ -112,6 +130,11 @@ class Soap extends MagentoInterface
     }
 
     /**
+     * Add Order
+     *
+     * This method will process through the logic in setting up a shopping
+     * cart.
+     *
      * @param array $request
      * @throws SoapFault
      * @throws \Exception
