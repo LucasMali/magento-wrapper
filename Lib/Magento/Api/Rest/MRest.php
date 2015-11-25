@@ -6,7 +6,7 @@
  * Time: 9:16 AM
  */
 
-namespace Lib\Magento\Rest;
+namespace Lib\Magento\Api\Rest;
 
 use Lib\Magento\MagentoInterface, OAuth;
 
@@ -15,10 +15,14 @@ use Lib\Magento\MagentoInterface, OAuth;
  * @package Lib\Magento\Rest
  *
  * @link http://devdocs.magento.com/guides/m1x/api/rest/introduction.html
+ * @link http://php.net/manual/en/oauth.examples.fireeagle.php
  */
 class MRest extends MagentoInterface
 {
-    const REST_URL = 'http://magento.local/api/rest/';
+    const REQ_URL = 'http://magento.local.local/oauth/token';
+    const AUTH_URL = 'http://magento.local/admin/oauth_authorize';
+    const ACC_URL = 'http://magento.local/oauth/token';
+    const API_URL = 'http://magento.local/api/rest/';
     const KEY = '3cd0823a5332363d63960013bd27fce0';
     const SECRET = '35b914f742d1b33f40a64265800e4901';
 

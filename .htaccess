@@ -1,0 +1,10 @@
+RewriteEngine on
+
+RewriteCond %{HTTP_HOST} ^indaba.local$ [NC]
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^([^/]+)/([^/]+)$ /public/$1.php?action=$2
+RewriteCond %{HTTP_HOST} ^indaba.local$ [NC]
+RewriteRule ^(/)?$ public/index.php [L]
