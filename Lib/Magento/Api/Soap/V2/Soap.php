@@ -75,7 +75,7 @@ class Soap extends MagentoInterface
         $logs = [];
         foreach ($products as $product) {
             try {
-                $logs[] = $this->soapCall($product);
+                $logs[] = $this->addProduct($product);
             } catch (SoapFault $sf) {
                 $logs['errors'][$product['sku']] = $sf->getMessage();
             } catch (\Exception $e) {
